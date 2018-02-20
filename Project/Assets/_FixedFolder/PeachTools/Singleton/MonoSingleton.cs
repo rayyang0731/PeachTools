@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T> {
-
 	protected static T _instance = null;
-
 	public static T Instance {
 		get {
 			if (_instance == null) {
@@ -30,12 +28,8 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 					return _instance;
 				} else {
 					Debug.LogWarningFormat ("已经存在这个实例:{0}", _instance.name);
+					return _instance;
 				}
-
-				GameObject go = new GameObject (typeof (T).Name);
-				_instance = go.AddComponent<T> ();
-				DontDestroyOnLoad (go);
-				Debug.LogFormat ("新建实例:{0}", go.name);
 			}
 			return _instance;
 		}

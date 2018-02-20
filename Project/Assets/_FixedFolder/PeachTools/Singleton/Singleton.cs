@@ -11,6 +11,7 @@ public abstract class Singleton<T> where T : Singleton<T> {
 				_instance = System.Activator.CreateInstance (typeof (T), true) as T;
 				if (_instance == null)
 					throw new System.Exception ("创建单例失败");
+				Debug.LogFormat ("添加一个新的单例:{0}", typeof (T).Name);
 			}
 			return _instance;
 		}
