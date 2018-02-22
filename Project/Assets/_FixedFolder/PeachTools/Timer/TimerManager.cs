@@ -15,7 +15,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// </summary>
 	private List<Timer> _Removes;
 
-	protected override void OnAwake () {
+	protected override void _Awake () {
 		Init ();
 	}
 

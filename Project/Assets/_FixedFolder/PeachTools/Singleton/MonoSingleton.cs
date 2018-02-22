@@ -42,12 +42,14 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 			if (_instance != null)
 				DontDestroyOnLoad (gameObject);
 		}
-		OnAwake ();
+		_Awake ();
 	}
 
 	private void OnDestroy () {
 		_instance = null;
+		_OnDestroy ();
 	}
 
-	protected virtual void OnAwake () { }
+	protected virtual void _Awake () { }
+	protected virtual void _OnDestroy () { }
 }
