@@ -48,6 +48,10 @@ public sealed class Timer {
 	/// </summary>
 	private Action<Timer> OnEnd;
 	/// <summary>
+	/// 计时取消回调
+	/// </summary>
+	private Action<Timer> OnCancel;
+	/// <summary>
 	/// 是否忽略 TimeScale
 	/// </summary>
 	private bool ignoreTimeScale;
@@ -258,6 +262,25 @@ public sealed class Timer {
 	}
 
 	/// <summary>
+	/// 添加取消回调
+	/// </summary>
+	public Timer AddCancelCallback (Action<Timer> callback) {
+		if (callback != null)
+			this.OnCancel += callback;
+
+		return this;
+	}
+	/// <summary>
+	/// 移除取消回调
+	/// </summary>
+	public Timer RemoveCancelCallback (Action<Timer> callback) {
+		if (callback != null)
+			this.OnCancel -= callback;
+
+		return this;
+	}
+
+	/// <summary>
 	/// 设置持续时间
 	/// </summary>
 	public Timer SetDuration (float duration) {
@@ -434,6 +457,13 @@ public sealed class Timer {
 	public void Stop () {
 		if (OnEnd != null)
 			OnEnd.Invoke (this);
+		Cancel ();
+	}
+
+	/// <summary>
+	/// 取消
+	/// </summary>
+	public void Cancel () {
 		this.ResetRunVariable ();
 		TimerManager.Instance.RemoveTimer (this);
 	}
