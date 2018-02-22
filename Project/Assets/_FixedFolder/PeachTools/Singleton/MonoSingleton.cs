@@ -49,5 +49,5 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 		_instance = null;
 	}
 
-	public virtual void OnAwake () { }
+	protected virtual void OnAwake () { }
 }
