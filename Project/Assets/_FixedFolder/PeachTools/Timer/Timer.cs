@@ -360,6 +360,23 @@ public sealed class Timer {
 	}
 
 	/// <summary>
+	/// (私有方法)启动计时器
+	/// </summary>
+	/// <param name="duration">持续时间</param>
+	/// <param name="onCallback">计时到设定时间回调</param>
+	/// <param name="callFrequency">回调频率</param>
+	/// <param name="loop">是否循环</param>
+	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
+	private static Timer _startup (float duration, Action<Timer> onCallback, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
+		if (onCallback != null) {
+			Timer timer = new Timer (duration, onCallback, loop, ignoreTimeScale);
+			timer.callbackFrequency = callFrequency;
+			timer.Startup ();
+			return timer;
+		} else
+			throw new Exception ("启动计时器失败,回调方法不能为Null");
+	}
+	/// <summary>
 	/// 启动计时器
 	/// </summary>
 	/// <param name="duration">持续时间</param>
@@ -368,14 +385,24 @@ public sealed class Timer {
 	/// <param name="loop">是否循环</param>
 	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
 	public static void Startup (float duration, Action<Timer> onCallback, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
-		if (onCallback != null) {
-			Timer timer = new Timer (duration, onCallback, loop, ignoreTimeScale);
-			timer.callbackFrequency = callFrequency;
-			timer.Startup ();
-		} else
-			Debug.LogError ("启动计时器失败,回调方法不能为Null");
+		_startup (duration, onCallback, callFrequency, loop, ignoreTimeScale);
 	}
-
+	/// <summary>
+	/// 启动计时器
+	/// </summary>
+	/// <param name="duration">持续时间</param>
+	/// <param name="onCallback">计时到设定时间回调</param>
+	/// <param name="guid">计时器唯一标识符</param>
+	/// <param name="callFrequency">回调频率</param>
+	/// <param name="loop">是否循环</param>
+	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
+	public static void Startup (float duration, Action<Timer> onCallback, out long guid, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
+		Timer timer = _startup (duration, onCallback, callFrequency, loop, ignoreTimeScale);
+		if (timer != null)
+			guid = timer.guid;
+		else
+			throw new Exception ("启动计时器失败,要启动的计时器为 Null");
+	}
 	/// <summary>
 	/// 启动计时器
 	/// </summary>

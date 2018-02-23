@@ -104,7 +104,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// 显示计时器数量
 	/// </summary>
 	private void UpdateRuntimeTimerCount () {
-		gameObject.name = string.Format ("__UTimerRuntime__({0})", _Timers.Count.ToString ());
+		gameObject.name = string.Format ("[TimerRuntime ({0})]", _Timers.Count.ToString ());
 	}
 #endif
 }
