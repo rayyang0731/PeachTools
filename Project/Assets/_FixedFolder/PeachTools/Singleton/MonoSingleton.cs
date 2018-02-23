@@ -16,7 +16,6 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 
 				if (_instance == null) {
 					string instanceName = typeof (T).Name;
-					Debug.LogFormat ("实例名称:{0}", instanceName);
 					GameObject instanceGO = GameObject.Find (instanceName);
 
 					if (instanceGO == null)
