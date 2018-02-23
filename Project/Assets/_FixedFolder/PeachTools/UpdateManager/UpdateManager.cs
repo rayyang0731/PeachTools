@@ -12,9 +12,9 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
     private readonly List<IFixedUpdate> _FixedUpdateStore = new List<IFixedUpdate> ();
     private readonly List<ILateUpdate> _LateUpdateStore = new List<ILateUpdate> ();
 
-    private IUpdate[] UpdateStore;
-    private IFixedUpdate[] FixedUpdateStore;
-    private ILateUpdate[] LateUpdateStore;
+    private IUpdate[] UpdateStore = new IUpdate[0];
+    private IFixedUpdate[] FixedUpdateStore = new IFixedUpdate[0];
+    private ILateUpdate[] LateUpdateStore = new ILateUpdate[0];
 
     #region 移除 Update
     public void RemoveUpdate (IUpdate update) {
