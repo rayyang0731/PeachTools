@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,22 @@ using UnityEngine;
 /// 计时器管理器
 /// </summary>
 public sealed class TimerManager : MonoSingleton<TimerManager> {
+	/// <summary>
+	/// 计时器池
+	/// </summary>
+	private ObjectPool<Timer> timerPool;
+	/// <summary>
+	/// 计时器池
+	/// </summary>
+	public ObjectPool<Timer> Pool {
+		get {
+			return timerPool;
+		}
+	}
+	/// <summary>
+	/// 对象池容量
+	/// </summary>
+	private const int poolCapacity = 10;
 	/// <summary>
 	/// 正在使用的计时器
 	/// </summary>
@@ -23,8 +40,26 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// 初始化
 	/// </summary>
 	private void Init () {
+		this.timerPool = new ObjectPool<Timer> (poolCapacity, createTimer, DestroyTimer);
+
 		this._Timers = new List<Timer> ();
 		this._Removes = new List<Timer> ();
+	}
+
+	/// <summary>
+	/// 删除计时器
+	/// </summary>
+	/// <param name="obj">要删除的计时器</param>
+	private void DestroyTimer (Timer obj) {
+		obj.Dispose ();
+	}
+
+	/// <summary>
+	/// 创建计时器
+	/// </summary>
+	/// <returns></returns>
+	private Timer createTimer () {
+		return new Timer ();
 	}
 
 	/// <summary>
@@ -104,7 +139,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// 显示计时器数量
 	/// </summary>
 	private void UpdateRuntimeTimerCount () {
-		gameObject.name = string.Format ("[TimerRuntime ({0})]", _Timers.Count.ToString ());
+		gameObject.name = string.Format ("[TimerRuntime ({0})|Pool ({1}/{2})]", _Timers.Count.ToString (), timerPool.Count, poolCapacity);
 	}
 #endif
 }

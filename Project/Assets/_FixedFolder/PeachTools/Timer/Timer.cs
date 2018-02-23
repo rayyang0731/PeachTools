@@ -6,7 +6,8 @@ using UnityEngine;
 /// <summary>
 /// 计时器对象
 /// </summary>
-public sealed class Timer {
+public sealed class Timer : IDisposable {
+	public Timer () { }
 	/// <summary>
 	/// 计时器唯一标识符
 	/// </summary>
@@ -46,7 +47,7 @@ public sealed class Timer {
 	/// <summary>
 	/// 计时结束回调
 	/// </summary>
-	private Action<Timer> OnEnd;
+	private Action<Timer> OnStop;
 	/// <summary>
 	/// 计时取消回调
 	/// </summary>
@@ -83,6 +84,10 @@ public sealed class Timer {
 	/// 传入的参数
 	/// </summary>
 	private object[] args;
+	/// <summary>
+	/// 是否已经释放过资源
+	/// </summary>
+	private bool disposed = false;
 
 	#region 公开属性
 	/// <summary>
@@ -245,18 +250,18 @@ public sealed class Timer {
 	/// <summary>
 	/// 添加结束回调
 	/// </summary>
-	public Timer AddEndCallback (Action<Timer> callback) {
+	public Timer AddStopCallback (Action<Timer> callback) {
 		if (callback != null)
-			this.OnEnd += callback;
+			this.OnStop += callback;
 
 		return this;
 	}
 	/// <summary>
 	/// 移除计时中回调
 	/// </summary>
-	public Timer RemoveEndCallback (Action<Timer> callback) {
+	public Timer RemoveStopCallback (Action<Timer> callback) {
 		if (callback != null)
-			this.OnEnd -= callback;
+			this.OnStop -= callback;
 
 		return this;
 	}
@@ -335,26 +340,10 @@ public sealed class Timer {
 	#endregion
 
 	/// <summary>
-	/// 计时器
-	/// </summary>
-	/// <param name="duration">持续时间</param>
-	/// <param name="callback">计时到设定时间回调</param>
-	/// <param name="isLoop">是否循环</param>
-	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
-	private Timer (float duration, Action<Timer> callback, bool isLoop, bool ignoreTimeScale) {
-		this.guid = System.DateTime.Now.Ticks;
-		this.duration = duration;
-		this.OnCallback = callback;
-		this.loop = isLoop;
-		this.ignoreTimeScale = ignoreTimeScale;
-		this.ResetRunVariable ();
-	}
-
-	/// <summary>
 	/// 初始运行变量
 	/// </summary>
 	private void ResetRunVariable () {
-		this.isPause = false;
+		this.isPause = true;
 		this.remainTime = 0f;
 		this.nextCallbackTime = 0f;
 	}
@@ -369,8 +358,7 @@ public sealed class Timer {
 	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
 	private static Timer _startup (float duration, Action<Timer> onCallback, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
 		if (onCallback != null) {
-			Timer timer = new Timer (duration, onCallback, loop, ignoreTimeScale);
-			timer.callbackFrequency = callFrequency;
+			Timer timer = Timer.Create (duration, onCallback, callFrequency, loop, ignoreTimeScale);
 			timer.Startup ();
 			return timer;
 		} else
@@ -418,8 +406,17 @@ public sealed class Timer {
 	/// </summary>
 	public static Timer Create (float duration, Action<Timer> callback, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
 		if (callback != null) {
-			Timer timer = new Timer (duration, callback, loop, ignoreTimeScale);
+			Timer timer = TimerManager.Instance.Pool.Get ();
+
+			timer.guid = System.DateTime.Now.Ticks;
+			timer.duration = duration;
+			timer.OnCallback = callback;
 			timer.callbackFrequency = callFrequency;
+			timer.loop = loop;
+			timer.ignoreTimeScale = ignoreTimeScale;
+
+			timer.ResetRunVariable ();
+
 			return timer;
 		} else {
 			Debug.LogError ("创建计时器失败,回调方法不能为Null");
@@ -482,17 +479,43 @@ public sealed class Timer {
 	/// 停止
 	/// </summary>
 	public void Stop () {
-		if (OnEnd != null)
-			OnEnd.Invoke (this);
-		Cancel ();
+		if (OnStop != null)
+			OnStop.Invoke (this);
+
+		ResetAndRecycle ();
 	}
 
 	/// <summary>
 	/// 取消
 	/// </summary>
 	public void Cancel () {
+		if (OnCancel != null)
+			OnCancel.Invoke (this);
+
+		ResetAndRecycle ();
+	}
+
+	/// <summary>
+	/// 重置并回收计时器
+	/// </summary>
+	private void ResetAndRecycle () {
 		this.ResetRunVariable ();
+		ClearAllEvent ();
 		TimerManager.Instance.RemoveTimer (this);
+		TimerManager.Instance.Pool.Recycle (this);
+	}
+
+	/// <summary>
+	/// 清理全部事件
+	/// </summary>
+	private void ClearAllEvent () {
+		OnStart = null;
+		OnCallback = null;
+		OnUpdate = null;
+		OnPause = null;
+		OnResume = null;
+		OnStop = null;
+		OnCancel = null;
 	}
 
 	public void Tick (float delteTime) {
@@ -521,6 +544,39 @@ public sealed class Timer {
 			}
 		} else if (OnUpdate != null) {
 			OnUpdate.Invoke (this);
+		}
+	}
+
+	/// <summary>
+	/// 清理所有正在使用的资源
+	/// </summary>
+	public void Dispose () {
+		Close ();
+		GC.SuppressFinalize (this);
+	}
+
+	private void Close () {
+		if (!this.disposed) {
+			guid = 0;
+			duration = 0;
+			loop = false;
+			callbackFrequency = 0;
+			OnStart = null;
+			OnCallback = null;
+			OnUpdate = null;
+			OnPause = null;
+			OnResume = null;
+			OnStop = null;
+			OnCancel = null;
+			ignoreTimeScale = false;
+			isPause = false;
+			remainTime = 0;
+			nextCallbackTime = 0;
+			startCount = 0;
+			finishCount = 0;
+			args = null;
+
+			this.disposed = true;
 		}
 	}
 }

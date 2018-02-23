@@ -16,11 +16,12 @@ public class testTimer : MonoBehaviour {
 			if (GUILayout.Button ("新建计时器")) {
 				Timer timer = Timer.Create (5, (t) => Debug.Log ("Timer Test"), 0, true);
 				timer.AddStartCallback ((t) => Debug.Log ("Timer Start"));
-				timer.AddEndCallback ((t) => Debug.Log ("Timer End"));
+				timer.AddStopCallback ((t) => Debug.Log ("Timer End"));
 				timer.SetParams ("Param 0", 1);
 				timer.AddUpdateCallback ((t) => Debug.LogFormat ("Update:已用时间({0})|参数0({1})|参数1({2})", t.ElapsedTime, t.GetParam<string> (), t.GetParam<int> (1)));
 				timer.AddPauseCallback ((t) => Debug.Log ("Timer Pause"));
 				timer.AddResumeCallback ((t) => Debug.Log ("Timer Resume"));
+				timer.AddCancelCallback ((t) => Debug.Log ("Timer Cancel"));
 				timerGUID = timer.GUID;
 				timer.Startup ();
 			}
@@ -32,6 +33,16 @@ public class testTimer : MonoBehaviour {
 			if (GUILayout.Button ("Resume")) {
 				Timer timer = TimerManager.Instance.GetTimer (timerGUID);
 				timer.Renumes ();
+			}
+			if (GUILayout.Button ("Stop")) {
+				Timer timer = TimerManager.Instance.GetTimer (timerGUID);
+				timer.Stop ();
+				timerGUID = 0;
+			}
+			if (GUILayout.Button ("Cancel")) {
+				Timer timer = TimerManager.Instance.GetTimer (timerGUID);
+				timer.Cancel ();
+				timerGUID = 0;
 			}
 		}
 	}
