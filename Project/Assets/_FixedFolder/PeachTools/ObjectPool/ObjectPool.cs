@@ -138,7 +138,6 @@ public class ObjectPool<T> where T : class, new () {
 				}
 			});
 		}
-		//_cacheQueue.Clear();
 	}
 
 	/// <summary>

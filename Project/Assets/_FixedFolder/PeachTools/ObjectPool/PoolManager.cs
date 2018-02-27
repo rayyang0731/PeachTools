@@ -117,8 +117,11 @@ public class PoolManager : Singleton<PoolManager> {
     /// </summary>
     /// <param name="destroyAll">是否销毁从池中衍生出来的所有对象</param>
     public void ReleaseAllPools (bool destroyAll = false) {
-        foreach (var item in dic_pool)
-            item.Value.DestroyPool (destroyAll);
+        foreach (var item in dic_pool) {
+            if (item.Value != null)
+                item.Value.DestroyPool (destroyAll);
+        }
+
         dic_pool.Clear ();
     }
 
@@ -244,7 +247,7 @@ public class PoolManager : Singleton<PoolManager> {
     /// 移除管理的对象池
     /// </summary>
     /// <param name="poolName">对象池名称</param>
-    public bool RemovePool (string poolName) {
+    private bool RemovePool (string poolName) {
         return dic_pool.Remove (poolName);
     }
 
@@ -254,11 +257,19 @@ public class PoolManager : Singleton<PoolManager> {
     /// <param name="poolName">对象池名称</param>
     public bool DestroyPool (string poolName) {
         UnityObjectPool pool;
-        if (TryGetPool (poolName, out pool)) {
-            pool.DestroyPool ();
-            return true;
-        }
+        if (TryGetPool (poolName, out pool))
+            return DestroyPool (pool);
         return false;
     }
+    /// <summary>
+    /// 销毁一个对象池
+    /// </summary>
+    /// <param name="pool">对象池</param>
+    /// <returns></returns>
+    public bool DestroyPool (UnityObjectPool pool) {
+        pool.DestroyPool ();
+        RemovePool (pool.poolName);
+        return true;
 
+    }
 }
