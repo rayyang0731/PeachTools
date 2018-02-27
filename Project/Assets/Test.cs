@@ -49,6 +49,7 @@ public class Test : MonoBehaviour {
 		// for (int i = 0; i < 100; i++) {
 		// 	// Debug.Log ("Show");
 		// }
+		
 		if (Input.GetKeyDown (KeyCode.A)) {
 			ProxyManager.Instance.Get<TestProxy> ();
 		}
