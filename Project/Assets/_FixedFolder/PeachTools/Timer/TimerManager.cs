@@ -142,4 +142,8 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 		gameObject.name = string.Format ("[TimerRuntime ({0})|Pool ({1}/{2})]", _Timers.Count.ToString (), timerPool.Count, poolCapacity);
 	}
 #endif
+
+	private void OnDestroy () {
+		this.timerPool.Clear (true);
+	}
 }
