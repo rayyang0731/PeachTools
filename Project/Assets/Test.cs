@@ -12,18 +12,21 @@ public class Test : MonoBehaviour {
 	void Start () {
 		// List<int> list = new List<int> ();
 		// int[] array = new int[1000];
-		// for (int i = 0; i < 1000; i++) {
-		// 	list.Add (i);
-		// 	array[i] = i;
-		// }
+		ListKV<string, int> kv = new ListKV<string, int> ();
+		for (int i = 0; i < 1000; i++) {
+			kv.Add (new KV<string, int> (i.ToString (), i));
+		}
 		// // Debug.unityLogger.logEnabled = logEnabled;
-		// Stopwatch watch = new Stopwatch ();
-		// watch.Start ();
-		// list.ForEach ((x) => x++);
-		// watch.Stop ();
-		// UnityEngine.Debug.LogFormat ("list ForEach:{0}", watch.Elapsed.Ticks);
+		Stopwatch watch = new Stopwatch ();
+		watch.Start ();
 
-		// watch.Reset ();
+		int n1 = kv["988"];
+		// n1 = list.Find ((n) => n == 988);
+		// list.Add (1001);
+		watch.Stop ();
+		UnityEngine.Debug.LogFormat ("list ForEach:{0}", watch.Elapsed.Ticks);
+
+		watch.Reset ();
 
 		// watch.Start ();
 		// for (int i = 0; i < 1000; i++) {
@@ -35,13 +38,20 @@ public class Test : MonoBehaviour {
 		// watch.Reset ();
 
 		// watch.Start ();
-		// for (int i = 0; i < 1000; i++) {
-		// 	array[i]++;
+		// array = list.ToArray ();
+		// int n2 = 0;
+		// for (int i = 0; i < array.Length; i++) {
+		// 	if (array[i] == 988) {
+		// 		n2 = array[i];
+		// 		break;
+		// 	}
 		// }
+
 		// watch.Stop ();
 		// UnityEngine.Debug.LogFormat ("array:{0}", watch.Elapsed.Ticks);
-		prefab_white = Resources.Load<GameObject> ("test_PoolManager/White_Sphere");
-		go = GameObject.Instantiate (prefab_white);
+
+		// prefab_white = Resources.Load<GameObject> ("test_PoolManager/White_Sphere");
+		// go = GameObject.Instantiate (prefab_white);
 	}
 
 	// Update is called once per frame
@@ -49,7 +59,7 @@ public class Test : MonoBehaviour {
 		// for (int i = 0; i < 100; i++) {
 		// 	// Debug.Log ("Show");
 		// }
-		
+
 		if (Input.GetKeyDown (KeyCode.A)) {
 			ProxyManager.Instance.Get<TestProxy> ();
 		}
