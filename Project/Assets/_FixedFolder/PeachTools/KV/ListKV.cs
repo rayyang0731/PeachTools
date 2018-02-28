@@ -40,6 +40,10 @@ public class ListKV<K, V> {
         _list.Add (kv);
     }
 
+    public void Add (K k, V v) {
+        _list.Add (new KV<K, V> (k, v));
+    }
+
     public void Clear () {
         _list.Clear ();
     }
