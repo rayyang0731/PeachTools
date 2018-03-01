@@ -10,23 +10,36 @@ public class Test : MonoBehaviour {
 	GameObject prefab_white;
 	GameObject go;
 	void Start () {
+		ListKV<string, int> list = new ListKV<string, int> ();
+		list.Add ("A", 382);
+		list.Add ("B", 749);
+		list.Add ("C", 482);
+		list.Add ("D", 082);
+
+		UnityEngine.Debug.Log (Dice.GetWinner (list, null, 0));
+
+		int[] arr = new int[4] { 483, 3498, 4839, 23 };
+		UnityEngine.Debug.Log (Dice.GetWinner (arr, null, 0));
+
+		UnityEngine.Debug.Log (Dice.GetResult (4739, null, 0));
+
 		// List<int> list = new List<int> ();
 		// int[] array = new int[1000];
-		ListKV<string, int> kv = new ListKV<string, int> ();
-		for (int i = 0; i < 1000; i++) {
-			kv.Add (new KV<string, int> (i.ToString (), i));
-		}
+		// ListKV<string, int> kv = new ListKV<string, int> ();
+		// for (int i = 0; i < 1000; i++) {
+		// 	kv.Add (new KV<string, int> (i.ToString (), i));
+		// }
 		// // Debug.unityLogger.logEnabled = logEnabled;
-		Stopwatch watch = new Stopwatch ();
-		watch.Start ();
+		// Stopwatch watch = new Stopwatch ();
+		// watch.Start ();
 
-		int n1 = kv["988"];
+		// int n1 = kv["988"];
 		// n1 = list.Find ((n) => n == 988);
 		// list.Add (1001);
-		watch.Stop ();
-		UnityEngine.Debug.LogFormat ("list ForEach:{0}", watch.Elapsed.Ticks);
+		// watch.Stop ();
+		// UnityEngine.Debug.LogFormat ("list ForEach:{0}", watch.Elapsed.Ticks);
 
-		watch.Reset ();
+		// watch.Reset ();
 
 		// watch.Start ();
 		// for (int i = 0; i < 1000; i++) {
