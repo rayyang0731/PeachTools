@@ -19,9 +19,9 @@ public class Test : MonoBehaviour {
 		UnityEngine.Debug.Log (Dice.GetWinner (list, null, 0));
 
 		int[] arr = new int[4] { 483, 3498, 4839, 23 };
-		UnityEngine.Debug.Log (Dice.GetWinner (arr, null, 0));
+		UnityEngine.Debug.LogWarning (Dice.GetWinner (arr, null, 0));
 
-		UnityEngine.Debug.Log (Dice.GetResult (4739, null, 0));
+		UnityEngine.Debug.LogError (Dice.GetResult (4739, null, 0));
 
 		// List<int> list = new List<int> ();
 		// int[] array = new int[1000];
