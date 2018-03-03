@@ -60,11 +60,24 @@ public static class GameObjectExtension {
     }
 
     /// <summary>
-    /// 获取对象包括子物体在内的所有Renderer
+    /// 获取对象全部渲染器
     /// </summary>
-    /// <param name="includeInactive">是否改变未激活的子物体层</param>
+    /// <param name="includeInactive">是否包含未激活的子物体</param>
+    /// <param name="includeParticle">是否包含特效</param>
     /// <returns></returns>
-    public static Renderer[] GetRenderersInChildren (this GameObject go, bool includeInactive = true) {
-        return go.GetComponentsInChildren<Renderer> (includeInactive);
+    public static Renderer[] GetRenderers (this GameObject go, bool includeInactive = true, bool includeParticle = false) {
+        Renderer[] rs = go.GetComponentsInChildren<Renderer> (includeInactive);
+
+        if (!includeParticle) {
+            List<Renderer> nonParticleRs = new List<Renderer> ();
+            foreach (Renderer r in rs) {
+                if (r.GetType () != typeof (ParticleSystemRenderer) &&
+                    r.GetType () != typeof (TrailRenderer)) {
+                    nonParticleRs.Add (r);
+                }
+            }
+            return nonParticleRs.ToArray ();
+        } else
+            return rs;
     }
 }

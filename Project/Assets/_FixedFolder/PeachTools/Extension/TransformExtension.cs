@@ -268,4 +268,14 @@ public static class TransformExtension {
         if (scale)
             t.localScale = Vector3.one;
     }
+
+    /// <summary>
+    /// 获取对象全部渲染器
+    /// </summary>
+    /// <param name="includeInactive">是否包含未激活的子物体</param>
+    /// <param name="includeParticle">是否包含特效</param>
+    /// <returns></returns>
+    public static Renderer[] GetRenderers (this Transform t, bool includeInactive = true, bool includeParticle = false) {
+        return t.gameObject.GetRenderers (includeInactive, includeParticle);
+    }
 }
