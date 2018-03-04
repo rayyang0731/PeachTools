@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 计时器管理器
 /// </summary>
-public sealed class TimerManager : MonoSingleton<TimerManager> {
+public class TimerManager : Singleton<TimerManager>, IUpdate {
 	/// <summary>
 	/// 计时器池
 	/// </summary>
@@ -32,7 +32,12 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// </summary>
 	private List<Timer> _Removes;
 
-	protected override void _Awake () {
+	/// <summary>
+	/// 计时器管理器虚拟体
+	/// </summary>
+	private GameObject TimeMgrVirtual;
+
+	protected TimerManager () {
 		Init ();
 	}
 
@@ -44,6 +49,11 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 
 		this._Timers = new List<Timer> ();
 		this._Removes = new List<Timer> ();
+
+#if UNITY_EDITOR
+		TimeMgrVirtual = new GameObject ("[TimerRuntime (0)|Pool (0/0)]");
+		MonoBehaviour.DontDestroyOnLoad (TimeMgrVirtual);
+#endif
 	}
 
 	/// <summary>
@@ -69,8 +79,8 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	public void AddTimer (Timer timer) {
 		if (!_Timers.Contains (timer)) {
 			_Timers.Add (timer);
-			if (!this.enabled) {
-				this.enabled = true;
+			if (!UpdateManager.Instance.Exist (this)) {
+				UpdateManager.Instance.Add (this);
 			}
 #if UNITY_EDITOR
 			UpdateRuntimeTimerCount ();
@@ -106,7 +116,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 		return _Timers.Exists ((t) => t.GUID == guid);
 	}
 
-	private void Update () {
+	public void _Update () {
 		if (_Timers.Count > 0) {
 			for (int i = 0, y = _Timers.Count; i < y; ++i) {
 				Timer timer = _Timers[i];
@@ -125,7 +135,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 				_Removes.Clear ();
 
 				if (_Timers.Count < 1) {
-					this.enabled = false;
+					UpdateManager.Instance.Remove (this);
 				}
 #if UNITY_EDITOR
 				UpdateRuntimeTimerCount ();
@@ -139,7 +149,7 @@ public sealed class TimerManager : MonoSingleton<TimerManager> {
 	/// 显示计时器数量
 	/// </summary>
 	private void UpdateRuntimeTimerCount () {
-		gameObject.name = string.Format ("[TimerRuntime ({0})|Pool ({1}/{2})]", _Timers.Count.ToString (), timerPool.Count, poolCapacity);
+		TimeMgrVirtual.name = string.Format ("[TimerRuntime ({0})|Pool ({1}/{2})]", _Timers.Count.ToString (), timerPool.Count, poolCapacity);
 	}
 #endif
 

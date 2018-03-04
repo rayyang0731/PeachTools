@@ -17,21 +17,21 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
     private ILateUpdate[] LateUpdateStore = new ILateUpdate[0];
 
     #region 移除 Update
-    public void RemoveUpdate (IUpdate update) {
+    private void RemoveUpdate (IUpdate update) {
         if (_UpdateStore.Contains (update)) {
             _UpdateStore.Remove (update);
             UpdateStore = _UpdateStore.ToArray ();
         }
     }
 
-    public void RemoveFixedUpdate (IFixedUpdate fixedUpdate) {
+    private void RemoveFixedUpdate (IFixedUpdate fixedUpdate) {
         if (_FixedUpdateStore.Contains (fixedUpdate)) {
             _FixedUpdateStore.Remove (fixedUpdate);
             FixedUpdateStore = _FixedUpdateStore.ToArray ();
         }
     }
 
-    public void RemoveLateUpdate (ILateUpdate lateUpdate) {
+    private void RemoveLateUpdate (ILateUpdate lateUpdate) {
         if (_LateUpdateStore.Contains (lateUpdate)) {
             _LateUpdateStore.Remove (lateUpdate);
             LateUpdateStore = _LateUpdateStore.ToArray ();
@@ -83,6 +83,27 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
             AddLateUpdate (lateUpdate);
     }
     #endregion
+
+    /// <summary>
+    /// 是否存在此实例
+    /// </summary>
+    /// <param name="_instance_"></param>
+    /// <returns></returns>
+    public bool Exist<T> (T _instance_) {
+        IUpdate update = _instance_ as IUpdate;
+        if (update != null)
+            return _UpdateStore.Contains (update);
+
+        IFixedUpdate fixedUpdate = _instance_ as IFixedUpdate;
+        if (fixedUpdate != null)
+            return _FixedUpdateStore.Contains (fixedUpdate);
+
+        ILateUpdate lateUpdate = _instance_ as ILateUpdate;
+        if (lateUpdate != null)
+            return _LateUpdateStore.Contains (lateUpdate);
+
+        return false;
+    }
 
     void Update () {
         if (UpdateStore.Length == 0) return;
