@@ -301,4 +301,27 @@ public static class TransformExtension {
         } else
             return 0;
     }
+
+    /// <summary>
+    /// 移除组件
+    /// </summary>
+    public static void RemoveComponent<T> (this Transform t) where T : Component {
+        T comp = t.GetComponent<T> ();
+        if (comp != null)
+            GameObject.Destroy (comp);
+    }
+
+    /// <summary>
+    /// 是否激活组件
+    /// </summary>
+    /// <param name="_enable">是否激活</param>
+    /// <param name="includeChild">是否影响子物体</param>
+    public static void EnableComponent<T> (this Transform t, bool _enable, bool includeChild = false) where T : Behaviour {
+        T comp = t.GetComponent<T> ();
+        if (comp != null)
+            comp.enabled = _enable;
+        if (includeChild)
+            for (int i = 0; i < t.childCount; i++)
+                t.GetChild (i).EnableComponent<T> (_enable, includeChild);
+    }
 }

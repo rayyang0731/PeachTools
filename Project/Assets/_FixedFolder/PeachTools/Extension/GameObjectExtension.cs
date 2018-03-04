@@ -81,7 +81,28 @@ public static class GameObjectExtension {
             return rs;
     }
 
+    /// <summary>
+    /// 获得粒子时长
+    /// </summary>
     public static float GetParticleLength (this GameObject go) {
         return go.transform.GetParticleLength ();
+    }
+
+    /// <summary>
+    /// 移除组件
+    /// </summary>
+    public static void RemoveComponent<T> (this GameObject go) where T : Component {
+        T comp = go.GetComponent<T> ();
+        if (comp != null)
+            GameObject.Destroy (comp);
+    }
+
+    /// <summary>
+    /// 是否激活组件
+    /// </summary>
+    /// <param name="_enable">是否激活</param>
+    /// <param name="includeChild">是否影响子物体</param>
+    public static void EnableComponent<T> (this GameObject go, bool _enable, bool includeChild = false) where T : Behaviour {
+        go.transform.EnableComponent<T> (_enable, includeChild);
     }
 }
