@@ -16,6 +16,21 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
     private IFixedUpdate[] FixedUpdateStore = new IFixedUpdate[0];
     private ILateUpdate[] LateUpdateStore = new ILateUpdate[0];
 
+#if UNITY_EDITOR
+    private GameObject updateVirtual;
+    private GameObject fixedUpdateVirtual;
+    private GameObject lateUpdateVirtual;
+    protected override void _Awake () {
+        this.name = "[UpdateRuntime]";
+        updateVirtual = new GameObject (string.Format ("[Update Pool:{0}]", UpdateStore.Length));
+        updateVirtual.transform.SetParent (this.transform);
+        fixedUpdateVirtual = new GameObject (string.Format ("[FixedUpdate Pool:{0}]", FixedUpdateStore.Length));
+        fixedUpdateVirtual.transform.SetParent (this.transform);
+        lateUpdateVirtual = new GameObject (string.Format ("[LateUpdate Pool:{0}]", LateUpdateStore.Length));
+        lateUpdateVirtual.transform.SetParent (this.transform);
+    }
+#endif
+
     #region 移除 Update
     private void RemoveUpdate (IUpdate update) {
         if (_UpdateStore.Contains (update)) {
@@ -50,6 +65,10 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
         ILateUpdate lateUpdate = _inst as ILateUpdate;
         if (lateUpdate != null)
             RemoveLateUpdate (lateUpdate);
+
+#if UNITY_EDITOR
+        UpdateRuntimeTimerCount ();
+#endif
     }
     #endregion
 
@@ -81,6 +100,10 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
         ILateUpdate lateUpdate = _instance_ as ILateUpdate;
         if (lateUpdate != null)
             AddLateUpdate (lateUpdate);
+
+#if UNITY_EDITOR
+        UpdateRuntimeTimerCount ();
+#endif
     }
     #endregion
 
@@ -104,6 +127,17 @@ public class UpdateManager : MonoSingleton<UpdateManager> {
 
         return false;
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 显示计时器数量
+    /// </summary>
+    private void UpdateRuntimeTimerCount () {
+        this.updateVirtual.name = string.Format ("[Update Pool:{0}]", UpdateStore.Length);
+        this.fixedUpdateVirtual.name = string.Format ("[FixedUpdate Pool:{0}]", FixedUpdateStore.Length);
+        this.lateUpdateVirtual.name = string.Format ("[LateUpdate Pool:{0}]", LateUpdateStore.Length);
+    }
+#endif
 
     void Update () {
         if (UpdateStore.Length == 0) return;
