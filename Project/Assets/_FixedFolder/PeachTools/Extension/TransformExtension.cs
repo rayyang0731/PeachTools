@@ -278,4 +278,27 @@ public static class TransformExtension {
     public static Renderer[] GetRenderers (this Transform t, bool includeInactive = true, bool includeParticle = false) {
         return t.gameObject.GetRenderers (includeInactive, includeParticle);
     }
+
+    /// <summary>
+    /// 获得粒子时长
+    /// </summary>
+    public static float GetParticleLength (this Transform t) {
+        ParticleSystem[] particleSystems = t.GetComponentsInChildren<ParticleSystem> ();
+        if (particleSystems.Length != 0) {
+            float maxDuration = 0;
+            foreach (ParticleSystem ps in particleSystems) {
+                if (ps.emission.enabled) {
+                    float duration = ps.main.startDelayMultiplier + ps.main.startLifetimeMultiplier;
+
+                    if (ps.emission.rateOverTimeMultiplier != 0)
+                        duration += ps.main.duration;
+
+                    if (duration > maxDuration)
+                        maxDuration = duration;
+                }
+            }
+            return maxDuration;
+        } else
+            return 0;
+    }
 }

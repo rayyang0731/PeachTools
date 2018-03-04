@@ -130,7 +130,7 @@ public static class ParseUtilities {
 	/// <summary>
 	/// 移除括号及括号外的字符
 	/// </summary>
-	/// <param name="val"></param>
+	/// <param name="val">要处理的字符串</param>
 	/// <returns></returns>
 	private static string RemoveParenthesis (string val) {
 		val = val.Remove (0, val.IndexOf ("(") + 1);
@@ -158,8 +158,8 @@ public static class ParseUtilities {
 	/// <summary>
 	/// 拆分 string 返回指定类型数组
 	/// </summary>
-	/// <param name="str"></param>
-	/// <param name="separator"></param>
+	/// <param name="str">要拆分的字符串</param>
+	/// <param name="separator">分隔符</param>
 	/// <returns></returns>
 	public static T[] SplitString<T> (string str, char separator = ',') {
 		T[] arr_t = null;

@@ -80,4 +80,8 @@ public static class GameObjectExtension {
         } else
             return rs;
     }
+
+    public static float GetParticleLength (this GameObject go) {
+        return go.transform.GetParticleLength ();
+    }
 }
