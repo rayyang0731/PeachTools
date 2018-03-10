@@ -11,7 +11,7 @@ public class UnityObjectPoolSign : BaseMonoBehaviour {
     /// <summary>
     /// 计时器GUID
     /// </summary>
-    private long timerGUID;
+    private string timerGUID;
 
     /// <summary>
     /// 签署这个对象

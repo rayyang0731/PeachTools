@@ -138,26 +138,32 @@ public static class AssetLoader {
     public static T Load<T> (string assetbundleName, AssetType assetType) where T : Object {
         if (!Config.Get<bool> ("IsSimulationMode")) {
 
-            T obj = LoadInCache<T> (assetbundleName, assetType);
-
-            UnloadAssetBundle (assetbundleName);
-
-            return obj as T;
+            Object obj;
+            if (LoadAssetBundle (assetbundleName, out obj)) {
+                UnloadAssetBundle (assetbundleName);
+                return obj as T;
+            } else
+                return null;
         } else {
             return LoadInEditor<T> (assetbundleName, assetType);
         }
     }
 
-    private static Object LoadAssetBundle (string assetbundleName) {
+    private static bool LoadAssetBundle (string assetbundleName, out Object asset) {
         string assetName = Path.GetFileNameWithoutExtension (assetbundleName);
 
         LoadedAssetBundle loaded;
-        if (LoadedBundles.TryGetValue (assetbundleName, out loaded))
-            return loaded.ab.LoadAsset (assetName);
+        if (LoadedBundles.TryGetValue (assetbundleName, out loaded)) {
+            asset = loaded.ab.LoadAsset (assetName);
+            return true;
+        }
 
         string fullName = string.Format ("{0}{1}", assetbundleName, Config.Get<string> ("AssetBundleExtName")).ToLower ();
-        if (!AllBundles.Contains (fullName))
-            throw new System.Exception (string.Format (DebugFormat, "不存在 Assetbundle", fullName));
+        if (!AllBundles.Contains (fullName)) {
+            Debug.LogErrorFormat (DebugFormat, "不存在 Assetbundle", fullName);
+            asset = null;
+            return false;
+        }
 
         string fullPath = string.Format ("{0}/{1}", BundlePath, fullName);
 
@@ -165,12 +171,15 @@ public static class AssetLoader {
 
         AssetBundle ab = AssetBundle.LoadFromFile (fullPath);
 
-        if (ab == null)
-            throw new System.Exception (string.Format (DebugFormat, "未加载到 AssetBundle", assetbundleName));
+        if (ab == null) {
+            Debug.LogErrorFormat (DebugFormat, "未加载到 AssetBundle", assetbundleName);
+            asset = null;
+            return false;
+        }
 
         LoadedBundles.Add (assetbundleName, new LoadedAssetBundle (ab));
-
-        return ab.LoadAsset (assetName);
+        asset = ab.LoadAsset (assetName);
+        return true;
     }
 
     /// <summary>
@@ -181,10 +190,11 @@ public static class AssetLoader {
     /// <returns></returns>
     public static T LoadInCache<T> (string assetbundleName, AssetType assetType) where T : Object {
         if (!Config.Get<bool> ("IsSimulationMode")) {
-
-            Object obj = LoadAssetBundle (assetbundleName);
-
-            return obj as T;
+            Object obj;
+            if (LoadAssetBundle (assetbundleName, out obj))
+                return obj as T;
+            else
+                return null;
         } else {
             return LoadInEditor<T> (assetbundleName, assetType);
         }
@@ -196,7 +206,7 @@ public static class AssetLoader {
     /// <param name="assetbundleName">资源文件的AssetbundleName(无扩展名)</param>
     /// <param name="assetType">资源类型</param>
     /// <returns></returns>
-    private static T LoadInEditor<T> (string assetbundleName, AssetType assetType) where T : Object {
+    public static T LoadInEditor<T> (string assetbundleName, AssetType assetType) where T : Object {
 #if UNITY_EDITOR
         string extName = GetExtName (assetType);
         string fullName = string.Format ("{0}{1}", assetbundleName, extName);

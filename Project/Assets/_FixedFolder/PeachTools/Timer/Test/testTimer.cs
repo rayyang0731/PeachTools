@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class testTimer : MonoBehaviour {
 
-	long timerGUID = 0;
+	string timerGUID = string.Empty;
 	private void Start () {
 		// Timer.Startup (2, (t) => { Debug.Log ("Timer test"); });
 		// Timer.Startup (2, (t) => { Debug.LogFormat ("StartCount:{0}|FinishCount:{1}", t.StartCount, t.FinishCount); }, 0, true);
@@ -12,7 +12,7 @@ public class testTimer : MonoBehaviour {
 
 	}
 	private void OnGUI () {
-		if (timerGUID == 0) {
+		if (string.IsNullOrEmpty (timerGUID)) {
 			if (GUILayout.Button ("新建计时器")) {
 				Timer timer = Timer.Create (5, (t) => Debug.Log ("Timer Test"), 0, true);
 				timer.AddStartCallback ((t) => Debug.Log ("Timer Start"));
@@ -37,12 +37,12 @@ public class testTimer : MonoBehaviour {
 			if (GUILayout.Button ("Stop")) {
 				Timer timer = TimerManager.Instance.GetTimer (timerGUID);
 				timer.Stop ();
-				timerGUID = 0;
+				timerGUID = string.Empty;
 			}
 			if (GUILayout.Button ("Cancel")) {
 				Timer timer = TimerManager.Instance.GetTimer (timerGUID);
 				timer.Cancel ();
-				timerGUID = 0;
+				timerGUID = string.Empty;
 			}
 		}
 	}

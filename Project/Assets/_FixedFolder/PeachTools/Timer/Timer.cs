@@ -11,7 +11,7 @@ public sealed class Timer : IDisposable {
 	/// <summary>
 	/// 计时器唯一标识符
 	/// </summary>
-	private long guid;
+	private string guid;
 	/// <summary>
 	/// 计时器持续时间
 	/// </summary>
@@ -93,7 +93,7 @@ public sealed class Timer : IDisposable {
 	/// <summary>
 	/// 计时器唯一标识符
 	/// </summary>
-	public long GUID { get { return this.guid; } }
+	public string GUID { get { return this.guid; } }
 
 	/// <summary>
 	/// 总持续时间
@@ -384,7 +384,7 @@ public sealed class Timer : IDisposable {
 	/// <param name="callFrequency">回调频率</param>
 	/// <param name="loop">是否循环</param>
 	/// <param name="ignoreTimeScale">是否忽略 TimeScale</param>
-	public static void Startup (float duration, Action<Timer> onCallback, out long guid, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
+	public static void Startup (float duration, Action<Timer> onCallback, out string guid, float callFrequency = 0f, bool loop = false, bool ignoreTimeScale = false) {
 		Timer timer = _startup (duration, onCallback, callFrequency, loop, ignoreTimeScale);
 		if (timer != null)
 			guid = timer.guid;
@@ -408,7 +408,7 @@ public sealed class Timer : IDisposable {
 		if (callback != null) {
 			Timer timer = TimerManager.Instance.Pool.Get ();
 
-			timer.guid = System.DateTime.Now.Ticks;
+			timer.guid = GUIDCreater.Get ();
 			timer.duration = duration;
 			timer.OnCallback = callback;
 			timer.callbackFrequency = callFrequency;
@@ -557,7 +557,7 @@ public sealed class Timer : IDisposable {
 
 	private void Close () {
 		if (!this.disposed) {
-			guid = 0;
+			guid = string.Empty;
 			duration = 0;
 			loop = false;
 			callbackFrequency = 0;

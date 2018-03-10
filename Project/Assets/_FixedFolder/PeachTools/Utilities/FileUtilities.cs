@@ -200,4 +200,21 @@ public static class FileUtilities {
         }
         return true;
     }
+    
+    /// <summary>
+    /// Stream转换为Byte
+    /// </summary>
+    public static byte[] StreamToByte (Stream stream) {
+        byte[] buffer = new byte[stream.Length];
+        stream.Read (buffer, 0, buffer.Length);
+        stream.Seek (0, SeekOrigin.Begin);
+        return buffer;
+    }
+
+    /// <summary>
+    /// Byte转换为Stream
+    /// </summary>
+    public static Stream ByteToStream (byte[] bytes) {
+        return new MemoryStream (bytes);
+    }
 }

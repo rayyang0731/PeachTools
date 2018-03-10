@@ -103,7 +103,7 @@ public class TimerManager : Singleton<TimerManager>, IUpdate {
 	/// </summary>
 	/// <param name="guid">计时器唯一标识符</param>
 	/// <returns></returns>
-	public Timer GetTimer (long guid) {
+	public Timer GetTimer (string guid) {
 		return _Timers.Find ((t) => t.GUID == guid);
 	}
 
@@ -112,7 +112,7 @@ public class TimerManager : Singleton<TimerManager>, IUpdate {
 	/// </summary>
 	/// <param name="guid">计时器唯一标识符</param>
 	/// <returns></returns>
-	public bool ExistTimer (long guid) {
+	public bool ExistTimer (string guid) {
 		return _Timers.Exists ((t) => t.GUID == guid);
 	}
 
