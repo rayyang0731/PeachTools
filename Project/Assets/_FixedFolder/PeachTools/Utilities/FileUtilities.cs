@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -20,8 +21,17 @@ public static class FileUtilities {
                 isExisted = true;
             } else
                 Debug.LogWarningFormat ("目录不存在 : {0}", directory);
-        } else
-            Debug.LogFormat ("此目录存在 : {0}", directory);
+        }
+        return isExisted;
+    }
+
+    /// <summary>
+    /// 检测文件是否存在
+    /// </summary>
+    /// <param name="path">文件地址</param>
+    /// <returns></returns>
+    public static bool CheckFile (string path) {
+        bool isExisted = File.Exists (path);
         return isExisted;
     }
 
@@ -152,5 +162,42 @@ public static class FileUtilities {
     public static string GetDirectory (string fileFullPath) {
         DirectoryInfo info = new DirectoryInfo (fileFullPath);
         return info.Parent.FullName;
+    }
+
+    /// <summary>
+    /// 读取文件
+    /// </summary>
+    /// <param name="fileName">文件名</param>
+    /// <returns></returns>
+    public static string ReadText (string fileName) {
+        StreamReader sr = null;
+        try {
+            sr = File.OpenText (fileName);
+        } catch (Exception) {
+            return null;
+        }
+        string text = sr.ReadToEnd ();
+        sr.Dispose ();
+        sr.Close ();
+        return text;
+    }
+    /// <summary>
+    /// 写入文件
+    /// </summary>
+    /// <param name="fileName">文件名</param>
+    /// <param name="content">文件内容</param>
+    /// <returns></returns>
+    public static bool WriteText (string fileName, string content) {
+        StreamWriter sw = null;
+        try {
+            sw = new StreamWriter (fileName, false);
+            sw.Write (content);
+            sw.Close ();
+        } catch (Exception) {
+            if (sw != null)
+                sw.Close ();
+            return false;
+        }
+        return true;
     }
 }

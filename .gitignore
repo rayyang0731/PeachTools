@@ -7,3 +7,9 @@ Project/.vscode
 Project/obj
 Project/Assets/Test.cs
 Test.meta
+Project/Assets/StreamingAssets
+Project/Bundles
+StreamingAssets.meta
+Project/Assets/Original Resources
+Original Resources.meta
+Project/Assets/Test
