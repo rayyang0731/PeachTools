@@ -106,6 +106,7 @@ public class SettingWindow : EditorWindow {
 	private void Open (string path) {
 		if (!FileUtilities.CheckFile (path)) {
 			FileUtilities.WriteText (path, "{\"AssetFolder\": \"Original Resources\",\"AssetBundleExtName\": \".assetbundle\",\"BundleFolder\": \"Bundles\",\"ManifestName\": \"AssetBundleManifest\",\"UseStreamingAssets\": \"true\",\"IsSimulationMode\": \"true\"}");
+			AssetDatabase.Refresh ();
 		}
 
 		string json = FileUtilities.ReadText (path);
