@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// AssetBundle 生成器
 /// </summary>
-public class AssetBundleBuilder : EditorWindow {
+public class AssetBundleBuilder {
 
     private const string DebugFormat = "<color=#9400D3>[AssetBundleBuilder]</color> {0}:{1}";
     /// <summary>
@@ -29,12 +29,7 @@ public class AssetBundleBuilder : EditorWindow {
             string[] filePaths = Directory.GetFiles (_rootPath, "*.*", SearchOption.AllDirectories);
             List<string> allFiles = new List<string> ();
             for (int i = 0; i < filePaths.Length; i++) {
-                if (filePaths[i].ToLower ().EndsWith (".prefab") ||
-                    filePaths[i].ToLower ().EndsWith (".mp3") ||
-                    filePaths[i].ToLower ().EndsWith (".ogg") ||
-                    filePaths[i].ToLower ().EndsWith (".asset") ||
-                    filePaths[i].ToLower ().EndsWith (".controller") ||
-                    filePaths[i].ToLower ().EndsWith (".txt")) {
+                if (JudgeExtension (filePaths[i])) {
                     string _filePath = filePaths[i].Substring (filePaths[i].IndexOf ("Assets"));
                     allFiles.Add (_filePath);
                     Debug.LogFormat (DebugFormat, "MarkFiles", _filePath);
@@ -43,6 +38,20 @@ public class AssetBundleBuilder : EditorWindow {
             return allFiles;
         } else
             throw new Exception (string.Format ("资源文件夹不存在:{0}", _rootPath));
+    }
+
+    /// <summary>
+    /// 判断后缀名
+    /// </summary>
+    /// <param name="filePath">文件地址</param>
+    /// <returns></returns>
+    private static bool JudgeExtension (string filePath) {
+        return filePath.ToLower ().EndsWith (".prefab") ||
+            filePath.ToLower ().EndsWith (".mp3") ||
+            filePath.ToLower ().EndsWith (".ogg") ||
+            filePath.ToLower ().EndsWith (".asset") ||
+            filePath.ToLower ().EndsWith (".controller") ||
+            filePath.ToLower ().EndsWith (".txt");
     }
 
     /// <summary>
