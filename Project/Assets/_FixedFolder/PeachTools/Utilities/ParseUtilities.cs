@@ -128,6 +128,20 @@ public static class ParseUtilities {
 	}
 
 	/// <summary>
+	/// 解析Color
+	/// </summary>
+	/// <param name="vals">要解析的字符串数组</param>
+	/// <param name="separator">分隔符</param>
+	/// <returns></returns>
+	public static Color[] ToColor (string[] vals, char separator = ',') {
+		Color[] colors = new Color[vals.Length];
+		for (int i = 0; i < vals.Length; i++) {
+			colors[i] = ToColor (vals[i]);
+		}
+		return colors;
+	}
+
+	/// <summary>
 	/// 移除括号及括号外的字符
 	/// </summary>
 	/// <param name="val">要处理的字符串</param>

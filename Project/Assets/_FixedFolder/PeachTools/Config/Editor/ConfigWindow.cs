@@ -3,14 +3,14 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 /// <summary>
-/// 设置窗口
+/// 配置窗口
 /// </summary>
-public class SettingWindow : EditorWindow {
+public class ConfigWindow : EditorWindow {
 	private static string configPath { get { return string.Format ("{0}/{1}", Application.dataPath, "_FixedFolder/PeachTools/Resources/config.json"); } }
 
-	[MenuItem ("Tools/设置")]
+	[MenuItem ("Tools/配置/配置文件")]
 	private static void ShowWindow () {
-		SettingWindow window = GetWindow<SettingWindow> ("配置文件", true);
+		ConfigWindow window = GetWindow<ConfigWindow> ("配置文件", true);
 		window.Open (configPath);
 		window.position = new Rect (0, 0, 600, 500);
 		window.minSize = new Vector2 (600, 500);
@@ -63,13 +63,17 @@ public class SettingWindow : EditorWindow {
 		if (GUILayout.Button ("添加", GUILayout.Width (50)) &&
 			!string.IsNullOrEmpty (newKey) &&
 			!string.IsNullOrEmpty (newValue)) {
-			data.Add (newKey, newValue);
-			newKey = string.Empty;
-			newValue = string.Empty;
+			if (data.ContainsKey (newKey)) {
+				ShowNotification (new GUIContent (string.Format ("此 Key 已存在:{0}", newKey)));
+			} else {
+				data.Add (newKey, newValue);
+				newKey = string.Empty;
+				newValue = string.Empty;
 
-			data_Keys = new List<string> (data.Keys);
+				data_Keys = new List<string> (data.Keys);
 
-			Save ();
+				Save ();
+			}
 		}
 		GUILayout.EndHorizontal ();
 	}
