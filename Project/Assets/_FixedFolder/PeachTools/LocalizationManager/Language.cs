@@ -9,7 +9,7 @@ public static class Language {
     private const string DebugFormat = "<color=#9400D3>[Language]</color> {0} : {1}";
     private static string prevMD5;
 
-    private static IDictionary<string, string> m_map;
+    private static IDictionary<string, string> m_map = new Dictionary<string, string> ();
 
     /// <summary>
     /// 加载本地化文件
@@ -19,8 +19,13 @@ public static class Language {
         TextAsset text = AssetLoader.Load<TextAsset> (GetLocalizeFilePath (language), AssetType.TXT);
         if (text != null)
             LoadContent (text.text);
-        else
+        else {
+#if UNITY_EDITOR
+                Debug.LogErrorFormat (DebugFormat, "该语言的本地化文件不存在,请先创建", GetLocalizeFilePath (language));
+#endif
             Debug.LogErrorFormat (DebugFormat, "Load AssetBundle Error", "读取本地化文件失败！请检查。");
+
+        }
     }
 
     /// <summary>
