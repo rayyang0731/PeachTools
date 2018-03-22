@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// 渐变色图片
 /// </summary>
 [AddComponentMenu ("UI/Effects/Gradient")]
-public class UIGradientComponent : BaseMeshEffect {
+public class UIGradient : BaseMeshEffect {
     /// <summary>
     /// 方向
     /// </summary>
