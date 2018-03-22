@@ -19,7 +19,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 					GameObject instanceGO = GameObject.Find (instanceName);
 
 					if (instanceGO == null)
-						instanceGO = new GameObject (instanceName);
+						instanceGO = new GameObject (string.Format ("[{0}]", instanceName));
 
 					_instance = instanceGO.AddComponent<T> ();
 					DontDestroyOnLoad (instanceGO); //保证实例不会被释放
