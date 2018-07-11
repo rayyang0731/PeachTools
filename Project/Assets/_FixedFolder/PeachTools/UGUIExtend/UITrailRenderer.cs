@@ -31,7 +31,7 @@ public class UITrailRenderer : Graphic {
     /// <summary>
     /// 锚点
     /// </summary>
-    public Vector3 anchor = new Vector3(200,200,0);
+    public Vector3 anchor = new Vector3 (200, 200, 0);
     /// <summary>
     /// 目标物
     /// </summary>
@@ -68,6 +68,15 @@ public class UITrailRenderer : Graphic {
 
         leftVertices = new List<Vertex> ();
         rightVertices = new List<Vertex> ();
+
+        SetPivot ();
+    }
+
+    protected override void Reset () {
+        SetPivot ();
+    }
+    public void SetPivot () {
+        rectTransform.anchorMax = rectTransform.anchorMin = rectTransform.pivot = Vector2.zero;
     }
 
     protected override void OnPopulateMesh (VertexHelper toFill) {

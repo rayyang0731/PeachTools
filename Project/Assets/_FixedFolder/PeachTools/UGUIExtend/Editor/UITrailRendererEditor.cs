@@ -7,6 +7,7 @@ public class UITrailRendererEditor : Editor {
 	UITrailRenderer _target;
 	void OnEnable () {
 		_target = (UITrailRenderer) target;
+		_target.SetPivot ();
 	}
 	void OnSceneGUI () {
 		if (_target.rt == null)
