@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[AddComponentMenu ("UI/Effect/UITrailRenderer")]
 public class UITrailRenderer : Graphic {
     /// <summary>
     /// 拖尾的生命周期
