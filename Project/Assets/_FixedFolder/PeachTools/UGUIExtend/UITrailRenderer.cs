@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 [AddComponentMenu ("UI/Effect/UITrailRenderer")]
 public class UITrailRenderer : Graphic {
     /// <summary>
@@ -72,10 +71,11 @@ public class UITrailRenderer : Graphic {
 
         SetPivot ();
     }
-
+#if UNITY_EDITOR
     protected override void Reset () {
         SetPivot ();
     }
+#endif
     public void SetPivot () {
         rectTransform.anchorMax = rectTransform.anchorMin = rectTransform.pivot = Vector2.zero;
     }
