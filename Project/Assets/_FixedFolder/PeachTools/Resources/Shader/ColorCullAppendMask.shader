@@ -1,4 +1,4 @@
-﻿Shader "Peach/ColorCullWithMask"
+﻿Shader "UI/Peach/ColorCullWithMask"
  {  
      Properties
      {

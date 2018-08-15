@@ -1,9 +1,10 @@
-﻿Shader "UI/Peach/UVAnimation/Texture" {
+﻿Shader "UI/Peach/UVAnimation/Addtive With Gradient" {
     Properties {
         [NoScaleOffset]_MainTex ("Sprite Texture", 2D) = "white" {}
-        [NoScaleOffset]_AlphaTex ("Alpha Texture", 2D) = "white" {}
-		_Color ("Tint", Color) = (1,1,1,1)
-        _Speed ("Speed", vector) = (1,1,0,0)
+        _Speed ("Speed", vector) = (1,1,0.5,1)
+        _Color01 ("Color01",Color) = (1,1,1,1)
+        _Color02 ("Color02",Color) = (1,1,1,1)
+        _Gradient ("Dir&Center&Range",Vector) = (1,0.5,1,0)
 
         //MASK SUPPORT ADD
         [HideInInspector]_StencilComp ("Stencil Comparison", Float) = 8
@@ -27,7 +28,7 @@
 		Cull Off
 		Lighting Off
 		ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha
+		Blend SrcAlpha One
 
         Stencil
         {
@@ -47,14 +48,11 @@
             #include "UnityCG.cginc"
             
             sampler2D _MainTex;
-            sampler2D _AlphaTex;
             half4 _MainTex_ST;
             half4 _Speed;
-			fixed4 _Color;
-			fixed4 _LTColor;
-			fixed4 _LBColor;
-			fixed4 _RTColor;
-			fixed4 _RBColor;
+			fixed4 _Color01;
+			fixed4 _Color02;
+			fixed4 _Gradient;
             
             struct a2v {
                 half4 vertex : POSITION;
@@ -79,9 +77,18 @@
             }
             
             fixed4 frag (v2f IN) : SV_Target {
-                fixed4 alphaTex = tex2D(_AlphaTex,IN.uv2);
-                fixed4 col = tex2D(_MainTex, IN.uv) * _Color * IN.color;
-                col.a = alphaTex.a * _Color.a;
+                fixed4 col = tex2D(_MainTex, IN.uv) * IN.color;
+                fixed offset;
+                if(_Gradient.x > 0){
+                    offset = saturate((IN.uv2.x - (_Gradient.y - _Gradient.z * 0.5))/_Gradient.z);
+                }
+                else{
+                    offset = saturate((IN.uv2.y - (_Gradient.y - _Gradient.z * 0.5))/_Gradient.z);
+                }
+                // fixed offset = saturate((IN.uv2.x - (_Gradient.y - _Gradient.z * 0.5))/_Gradient.z);
+                fixed4 gradient = lerp(_Color01,_Color02,offset);
+                col *= gradient;
+                col.a = gradient.a;
                 return col;
             }
             

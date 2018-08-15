@@ -1,10 +1,19 @@
-﻿Shader "Peach/IllumineUVAnimation" {
+﻿Shader "UI/Peach/IllumineUVAnimation" {
     Properties {
         [NoScaleOffset]_MainTex ("Sprite Texture", 2D) = "white" {}
 		[NoScaleOffset]_Illum ("Illumin (A)", 2D) = "white" {}
 		_Color ("Tint", Color) = (1,1,1,1)
         _Speed ("Speed", vector) = (1,1,0,0)
         _Power ("Power",Range(0,5.0))=1
+
+        //MASK SUPPORT ADD
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15
+        //MASK SUPPORT END
     }
     SubShader {
        Tags
@@ -20,6 +29,16 @@
 		Lighting Off
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
+
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp] 
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+        ColorMask [_ColorMask]
 
         Pass { 
             CGPROGRAM

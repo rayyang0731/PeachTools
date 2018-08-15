@@ -1,4 +1,4 @@
-﻿Shader "UI/Peach/UVAnimation/Texture" {
+﻿Shader "UI/Peach/UVAnimation/Additive" {
     Properties {
         [NoScaleOffset]_MainTex ("Sprite Texture", 2D) = "white" {}
         [NoScaleOffset]_AlphaTex ("Alpha Texture", 2D) = "white" {}
@@ -27,7 +27,7 @@
 		Cull Off
 		Lighting Off
 		ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha
+		Blend SrcAlpha One
 
         Stencil
         {
@@ -51,10 +51,6 @@
             half4 _MainTex_ST;
             half4 _Speed;
 			fixed4 _Color;
-			fixed4 _LTColor;
-			fixed4 _LBColor;
-			fixed4 _RTColor;
-			fixed4 _RBColor;
             
             struct a2v {
                 half4 vertex : POSITION;

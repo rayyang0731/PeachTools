@@ -1,4 +1,4 @@
-﻿Shader "Peach/Puzzle"
+﻿Shader "UI/Peach/Puzzle"
 {
 	Properties
 	{
